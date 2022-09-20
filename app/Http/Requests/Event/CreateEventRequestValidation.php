@@ -44,6 +44,9 @@ class CreateEventRequestValidation extends FormRequest
             'repeatOn' => 'required',
             'repeatWeek' => [
                 'required_if:repeatOn,==,"W"'
+            ],
+            'repeatMonth' => [
+                'required_if:repeatOn,==,"M"'
             ]
         ];
     }

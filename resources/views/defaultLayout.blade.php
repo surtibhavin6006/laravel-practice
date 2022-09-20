@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,23 +10,6 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <style>
-        /*.loader {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            border: 16px solid #f3f3f3; !* Light grey *!
-            border-top: 16px solid #3498db; !* Blue *!
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }*/
-
         .loader {
             width:100%;
 
@@ -79,15 +61,7 @@
 
 <body>
 
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Event Demo</a>
-        </div>
-        <ul class="nav navbar-nav">
-        </ul>
-    </div>
-</nav>
+@include('defaultNavBar')
 
 <main role="main" class="container">
     <div class="loader"></div>
@@ -95,18 +69,8 @@
 </main><!-- /.container -->
 
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-{{--
-<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
---}}
-{{--<script src="{{ asset('js/jquery-3.3.1.slim.min.js') }}" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>--}}
-{{--<script>window.jQuery || document.write('<script src="{{ asset('js/jquery-slim.min.js') }}"><\/script>')</script>--}}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-{{--<script src="{{ asset('js/popper.min.js') }}"></script>--}}
-{{--<script src="{{ asset('js/bootstrap.min.js') }}"></script>--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
 
 @yield('javascriptBlock')
