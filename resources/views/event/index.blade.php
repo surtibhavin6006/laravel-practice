@@ -39,8 +39,8 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group row repeat_on_week_dropdown hide">
-                        <label for="repeat_on_week_dropdown" class="col-sm-2 col-form-label">Repeat On:</label>
+                    <div class="form-group row repeat_on_week_dropdown repeat_on_option_dropdown hide">
+                        <label for="repeat_on_week_dropdown" class="col-sm-2 col-form-label">Repeat Weekly:</label>
                         <div class="col-sm-10">
                             <select class="form-control col-sm-10" id="repeat_on_week_dropdown" name="repeatWeek">
                                 <option value="1">Sunday</option>
@@ -50,6 +50,18 @@
                                 <option value="5">Thursday</option>
                                 <option value="6">Friday</option>
                                 <option value="7">Saturday</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row repeat_on_month_dropdown repeat_on_option_dropdown hide">
+                        <label for="repeat_on_week_dropdown" class="col-sm-2 col-form-label">Repeat Every Month:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control col-sm-10" id="repeat_on_month_dropdown" name="repeatMonth">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="6">6</option>
                             </select>
                         </div>
                     </div>
@@ -82,6 +94,7 @@
                     <div class="form-group row">
                         <input type="hidden" id="eventId" name="id" />
                         <button type="button" id="submitEventBtn" class="btn btn-primary">Save</button>
+                        <button type="button" id="cancelEventBtn" class="btn btn-primary">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -194,7 +207,8 @@
                             date : true,
                             required : function (ele) {
                                 return $("#number_of_occurrence").val() === '';
-                            }
+                            },
+                            greaterStart: "#start_date"
                         },
                         repeatOn : "required",
                         repeatWeek : {
@@ -322,8 +336,15 @@
 
                     $("#crudEventPanel > .crud-event").html('Event Edit - <b>'+data.title+'</b>');
 
-                    $("#eventForm :input").each(function () {
-                        $(this).val(data[$(this).attr('name')])
+                    $("#eventForm :input:not(:button)").each(function () {
+                        $(this).val(data[$(this).attr('name')]);
+
+                        if(
+                            $(this).attr('name') != 'title'
+                        ){
+                            $(this).addClass('form-control-plaintext');
+                            $(this).attr('readOnly',true);
+                        }
                     });
 
                     $("#crudEventPanel").show();
@@ -334,8 +355,10 @@
                 },
                 formReset : function (form) {
                     $(form).trigger("reset");
+                    $('#eventForm :input').removeAttr('readonly');
                     $(".showError").addClass('hide');
                     $(".repeat_on_week_dropdown").hide();
+                    $(".repeat_on_month_dropdown").hide();
                     $("#crudEventPanel").hide();
                     $("#crudEventPanel > .crud-event").html('Event');
                 }
@@ -346,15 +369,20 @@
             event.getAllEvent();
 
             $("#repeat_on").change(function () {
-                if($(this).val() === 'W'){
+                $('.repeat_on_option_dropdown').addClass('hide');
+                if($(this).val() === 'M'){
+                    $('.repeat_on_month_dropdown').removeClass('hide');
+                }else if($(this).val() === 'W'){
                     $('.repeat_on_week_dropdown').removeClass('hide');
-                } else {
-                    $('.repeat_on_week_dropdown').addClass('hide');
                 }
             });
 
             $("#submitEventBtn").on('click',function () {
                 event.validateEvent($("#eventForm"));
+            });
+
+            $("#cancelEventBtn").on('click',function () {
+                event.common.formReset($('#eventForm'));
             });
 
             $(".table tbody").on('click','a.eventEditClass',function () {
@@ -386,7 +414,9 @@
                $("#end_date").val('');
             });
 
-
+            jQuery.validator.addMethod("greaterStart", function (value, element, params) {
+                return this.optional(element) || new Date(value) >= new Date($(params).val());
+            },'Must be greater than start date.');
 
         });
 

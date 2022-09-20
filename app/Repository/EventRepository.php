@@ -32,12 +32,13 @@ class EventRepository
     {
         $eventData = empty($id) ? new $this->eventModel : (new $this->eventModel)->getEventById($id);
 
-        $eventData[$this->eventModel::TITLE] = $request->title;
-        $eventData[$this->eventModel::START_DATE] = Carbon::parse($request->startDate);
-        $eventData[$this->eventModel::END_DATE] = !empty($request->endDate) ? Carbon::parse($request->endDate) : null;
-        $eventData[$this->eventModel::END_AFTER_OCCURRENCES] = !empty($request->endAfterOccurrences) ? $request->endAfterOccurrences : null;
-        $eventData[$this->eventModel::REPEAT_ON] = $request->repeatOn;
-        $eventData[$this->eventModel::REPEAT_WEEK] = empty($request->repeatWeek) ? $request->repeatWeek : null;
+        $eventData->{$this->eventModel::TITLE} = $request->title;
+        $eventData->{$this->eventModel::START_DATE} = Carbon::parse($request->startDate);
+        $eventData->{$this->eventModel::END_DATE} = !empty($request->endDate) ? Carbon::parse($request->endDate) : null;
+        $eventData->{$this->eventModel::END_AFTER_OCCURRENCES} = !empty($request->endAfterOccurrences) ? $request->endAfterOccurrences : 0;
+        $eventData->{$this->eventModel::REPEAT_ON} = $request->repeatOn;
+        $eventData->{$this->eventModel::REPEAT_WEEK} = !empty($request->repeatWeek) ? $request->repeatWeek : null;
+        $eventData->{$this->eventModel::REPEAT_MONTH} = !empty($request->repeatMonth) ? $request->repeatMonth : null;
 
         return $eventData;
     }
