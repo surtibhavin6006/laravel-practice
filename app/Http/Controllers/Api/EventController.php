@@ -40,7 +40,7 @@ class EventController extends Controller
         return new EventResource($data);
     }
 
-    public function update(Request $request,$id)
+    public function update(CreateEventRequestValidation $request,$id)
     {
         // get json request and pass to repository.
         $data = $this->eventRepository->updateEvent($request,$id);

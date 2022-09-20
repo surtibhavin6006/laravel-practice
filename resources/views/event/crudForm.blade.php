@@ -30,6 +30,7 @@
                     <label for="repeat_on_week_dropdown" class="col-sm-2 col-form-label">Repeat Weekly:</label>
                     <div class="col-sm-10">
                         <select class="form-control col-sm-10" id="repeat_on_week_dropdown" name="repeatWeek">
+                            <option value="">Select</option>
                             <option value="1">Sunday</option>
                             <option value="2">Monday</option>
                             <option value="3">Tuesday</option>
@@ -44,6 +45,7 @@
                     <label for="repeat_on_week_dropdown" class="col-sm-2 col-form-label">Repeat Every Month:</label>
                     <div class="col-sm-10">
                         <select class="form-control col-sm-10" id="repeat_on_month_dropdown" name="repeatMonth">
+                            <option value="">Select</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>

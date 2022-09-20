@@ -127,6 +127,11 @@
                                 return $("#repeat_on").val() === 'W';
                             }
                         },
+                        repeatMonth : {
+                            required : function (ele) {
+                                return $("#repeat_on").val() === 'M';
+                            }
+                        },
                         endAfterOccurrences : {
                             required : function (ele) {
                                 return $("#end_date").val() === '';
@@ -292,6 +297,8 @@
 
             $("#repeat_on").change(function () {
                 $('.repeat_on_option_dropdown').addClass('hide');
+                $('#repeat_on_week_dropdown').prop('selectedIndex',0);
+                $('#repeat_on_month_dropdown').prop('selectedIndex',0);
                 if($(this).val() === 'M'){
                     $('.repeat_on_month_dropdown').removeClass('hide');
                 }else if($(this).val() === 'W'){
