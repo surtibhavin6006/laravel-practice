@@ -111,39 +111,4 @@ class Event extends Model
             $query->where(self::END_AFTER_OCCURRENCES,'>',0);
         });
     }
-
-    public function getEventsToBeExecutedByDate(?Carbon $dateYmd)
-    {
-        if(empty($dateYmd)){
-            $date = Carbon::now();
-        }
-
-        $dateYmd = $date->format('Y-m-d');
-        $currentDayOfWeek = $date->dayOfWeek;
-        $firstDateOfTheMonth = $date->startOfMonth()->format('Y-m-d');
-        $firstDateOfTheYear = $date->startOfYear()->format('Y-m-d');
-
-
-        return $this->where(self::START_DATE,'>=',$dateYmd)
-            ->where(function($query) use($dateYmd){
-                $query->where(self::END_DATE,'<=',$dateYmd);
-                $query->orWhere(self::END_AFTER_OCCURRENCES,'>',0);
-            })
-            ->where(function($queryRepeatON) use($dateYmd,$currentDayOfWeek){
-                $queryRepeatON->where(function($queryDate) use($dateYmd){
-                    $queryDate->where(self::REPEAT_ON,'=','D');
-                });
-                $queryRepeatON->orWhere(function($queryDate) use($dateYmd){
-                    $queryDate->where(self::REPEAT_ON,'=','M');
-                    $queryDate->where(self::START_DATE,'=',''); // first day of month
-                });
-                $queryRepeatON->orWhere(function($queryDate) use($currentDayOfWeek){
-                    $queryDate->where(self::REPEAT_ON,'=','W');
-                    $queryDate->where(self::REPEAT_WEEK,'=',$currentDayOfWeek); // get current day
-                });
-                $queryRepeatON->orWhere(function($queryDate) use($dateYmd){
-                    $queryDate->where(self::REPEAT_ON,'=','Y');
-                });
-            });
-    }
 }

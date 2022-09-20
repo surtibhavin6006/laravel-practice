@@ -20,6 +20,7 @@ class EventController extends Controller
 
     public function all(Request $request)
     {
+        dd(Carbon::now()->month);
         // get all list
         $events = $this->eventRepository->getAllEvents(null);
 
