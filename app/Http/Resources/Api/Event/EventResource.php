@@ -20,6 +20,7 @@ class EventResource extends JsonResource
             $this->mergeWhen( $request->route()->getName() == 'api.event.view',[
                 'repeatOn' => $this->repeat_on,
                 'repeatWeek' => $this->repeat_week,
+                'repeatMonth' => $this->repeat_month,
                 'startDate' => $this->start_date,
                 'endDate' => $this->end_date,
                 'endAfterOccurrences' => $this->end_after_occurrences,

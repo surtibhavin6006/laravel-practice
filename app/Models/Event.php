@@ -108,7 +108,7 @@ class Event extends Model
         })->orWhere(function($query) use($dateYmd){
             $query->where(self::START_DATE,'<=',$dateYmd);
             $query->whereNull(self::END_DATE);
-            $query->where(self::END_AFTER_OCCURRENCES,'>',0);
+            $query->where(self::END_AFTER_OCCURRENCES,'>',self::SUCC_FULLY_RUN_COUNT);
         });
     }
 }

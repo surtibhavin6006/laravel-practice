@@ -1,64 +1,67 @@
 ## About Project
 
 Simple Laravel application which have crud of Event using ajax and run event.
+- frontend validation
+- backend validation
+- bootstrap theme
+- ajax crud on single page.
+- on edit only title is editable.
+- scheduler to run command event daily,weekly,monthly,yearly events.
 
 ###requirement
 - php8
 - composer
 
+###Event Details
+- Title 
+- Start Date
+- End Date or Num of Occurrence
+  - Event will stop executing until enddate reached or number of time executed (Num of Occurrence) 
+- Repeat On : Day,Week,Month,Year
+  - Day
+    - will run daily
+  - week : Monday,Tuesday,Wednesday,Thursday,Friday,Saturday.
+    - it will run on selected week.
+  - month: 1,2,3,4,6
+    - every 1 month or 2 months or 3 months, etc..
+  
 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+##Steps to install
+- clone repo
+- composer install
+- php artisan:migrate
+  - will run the migration, please set up database name in your .env file to run migration.
+- for test data,factory is created.
+  ```
+  App\Models\Event::factory()->withEndDateDaily()->count(10)->create();
+  App\Models\Event::factory()->withEndAfterNumOfOccurenceDaily()->count(10)->create();
+  
+  App\Models\Event::factory()->withEndDateMonthly()->count(10)->create();
+  App\Models\Event::factory()->withEndAfterNumOfOccurenceMonthly()->count(10)->create();
+  
+  App\Models\Event::factory()->withEndDateWeekly()->count(10)->create();
+  App\Models\Event::factory()->withEndDateYearly()->count(10)->create();
+  
+  App\Models\Event::factory()->withEndAfterNumOfOccurenceWeekly()->count(10)->create();
+  App\Models\Event::factory()->withEndAfterNumOfOccurenceYearly()->count(10)->create();
+  ```
+- set up cron tab to execute command
+  ```
+  * * * * * php /path/to/artisan schedule:run 1>> /dev/null 2>&1
+  OR
+  * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+  ```
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-
-App\Models\Event::factory()->withEndDateDaily()->count(10)->create();
+##How event call
+- there are command created for daily,weekly,monthly,early and all are been called from schedule.
+- daily
+  - call daily
+- weekly
+  - call daily and get current day and run.
+- monthly
+  - call on every month
+- yearly
+  - call on every year
+- until event table fields end_after_occurrences not equal to successfullyRunCount or end date reach

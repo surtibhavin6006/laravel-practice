@@ -64,7 +64,6 @@
                     success: function(data) {
                         event.common.hideListingLoader();
                         event.common.setEditDataForEvent(data.data);
-                        console.log(data);
                     }
                 });
             },
@@ -151,7 +150,6 @@
                     type: 'DELETE',
                     dataType: 'json',
                     success: function(data) {
-                        console.log(data);
                         let currentPage = event.common.getCurrentPage();
                         event.getAllEvent(currentPage);
                     }
@@ -257,6 +255,19 @@
                             $(this).addClass('form-control-plaintext');
                             $(this).attr('readOnly',true);
                         }
+
+                        if(
+                            $(this).attr('name') == 'repeatOn' && data[$(this).attr('name')] == 'W'
+                        ){
+                            $(".repeat_on_week_dropdown").removeClass('hide');
+                        }
+
+                        if(
+                            $(this).attr('name') == 'repeatOn' && data[$(this).attr('name')] == 'M'
+                        ){
+                            $(".repeat_on_month_dropdown").removeClass('hide');
+                        }
+
                     });
 
                     $("#crudEventPanel").show();
@@ -269,8 +280,7 @@
                     $(form).trigger("reset");
                     $('#eventForm :input').removeAttr('readonly');
                     $(".showError").addClass('hide');
-                    $(".repeat_on_week_dropdown").hide();
-                    $(".repeat_on_month_dropdown").hide();
+                    $(".repeat_on_option_dropdown").addClass('hide');
                     $("#crudEventPanel").hide();
                     $("#crudEventPanel > .crud-event").html('Event');
                 }
