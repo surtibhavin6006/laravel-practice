@@ -8,11 +8,11 @@ Simple Laravel application which have crud of Event using ajax and run event.
 - on edit only title is editable.
 - scheduler to run command event daily,weekly,monthly,yearly events.
 
-###requirement
+####requirement
 - php8
 - composer
 
-###Event Details
+####Event Details
 - Title 
 - Start Date
 - End Date or Num of Occurrence
