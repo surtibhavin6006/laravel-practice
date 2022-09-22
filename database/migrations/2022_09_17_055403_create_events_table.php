@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('end_after_occurrences')->default(0);
             $table->enum('repeat_on',array_keys(config('event.repeat_on')));
             $table->enum('repeat_week',array_keys(config('event.repeat_weeks')))->nullable();
-            $table->unsignedInteger('repeat_month',array_keys(config('event.repeat_months')))->nullable();
+            $table->unsignedInteger('repeat_month')->nullable();
             $table->unsignedBigInteger('successfullyRunCount')->default(0);
             $table->timestamps();
             $table->softDeletes();
