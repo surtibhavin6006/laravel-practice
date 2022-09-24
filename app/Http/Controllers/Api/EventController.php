@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\CreateEventRequestValidation;
+use App\Http\Resources\Api\Event\EventHistoriesResource;
 use App\Http\Resources\Api\Event\EventResource;
 use App\Http\Resources\Api\Event\EventsResource;
 use App\Repository\EventRepository;
@@ -51,5 +52,12 @@ class EventController extends Controller
     {
         // get json request and pass to repository.
         return $this->eventRepository->deleteEvent($id);
+    }
+
+    public function viewEventHistory(Request $request,$id)
+    {
+        // get json request and pass to repository.
+        $data = $this->eventRepository->getEventHisotryByEventId($id);
+        return new EventHistoriesResource($data);
     }
 }

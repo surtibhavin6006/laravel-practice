@@ -24,3 +24,4 @@ Route::put('event/{id}',[\App\Http\Controllers\Api\EventController::class,'updat
 Route::delete('event/{id}',[\App\Http\Controllers\Api\EventController::class,'delete'])->name('api.event.delete');
 Route::get('event/{id}',[\App\Http\Controllers\Api\EventController::class,'view'])->name('api.event.view');
 Route::get('events',[\App\Http\Controllers\Api\EventController::class,'all'])->name('api.event.list');
+Route::get('event/{id}/history',[\App\Http\Controllers\Api\EventController::class,'viewEventHistory'])->name('api.event.history');

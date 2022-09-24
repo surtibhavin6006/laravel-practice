@@ -29,7 +29,6 @@ class CommtoRunEveryMonth extends Command
     public function handle(EventRepository $eventRepository)
     {
         $onEveryMonth = $this->option('month');
-        dd($onEveryMonth);
         $eventRepository->executeMonthlyEvent($onEveryMonth);
     }
 }

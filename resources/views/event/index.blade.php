@@ -13,7 +13,7 @@
 
     @include('event.crudForm')
 
-    <table class="table">
+    <table class="table event-listing">
         <thead>
         <tr>
             <th scope="col">#</th>
@@ -24,11 +24,24 @@
         <tbody>
         </tbody>
     </table>
-
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
         </ul>
     </nav>
+
+    <hr/>
+    <div class="row event-history-div hide">
+        <h1>Events History</h1>
+        <table class="table event-history">
+            <thead>
+            <tr>
+                <th scope="col">Executed At</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 
 @endsection
 
@@ -47,7 +60,6 @@
                         page : page === undefined ? 1 : page
                     },
                     success: function(data) {
-                        console.log(data);
                         event.common.prepareHtmlFromJsonDataDisplay(data.data);
                         event.common.preparePaginationAndDisplay(data.meta);
                     }
@@ -64,6 +76,20 @@
                     success: function(data) {
                         event.common.hideListingLoader();
                         event.common.setEditDataForEvent(data.data);
+                    }
+                });
+            },
+            getEventHistoryByEventId : function (eventId) {
+                event.common.showListingLoader();
+                let getEventHistoryByIdURL = '{{ route('api.event.history',['id' => '#eventId']) }}';
+                getEventHistoryByIdURL = getEventHistoryByIdURL.replace("#eventId",eventId);
+                $.ajax({
+                    url: getEventHistoryByIdURL,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        event.common.prepareHtmlFromJsonDataDisplayForEventHistory(data.data);
+                        event.common.hideListingLoader();
                     }
                 });
             },
@@ -171,6 +197,9 @@
                                         <a class="eventEditClass" href="javascript:void(0);" data-id="`+data.id+`">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </a>
+                                        <a class="eventHistoryClass" href="javascript:void(0);" data-id="`+data.id+`">
+                                            <span class="glyphicon glyphicon-list"></span>
+                                        </a>
                                         <a class="eventDeleteClass" href="javascript:void(0);" data-id="`+data.id+`">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </a>
@@ -180,7 +209,21 @@
 
                     event.common.hideListingLoader();
 
-                    $(".table tbody").html(html);
+                    $(".event-listing tbody").html(html);
+                },
+                prepareHtmlFromJsonDataDisplayForEventHistory : function (jsonData) {
+
+                    let html = '';
+                    jsonData.forEach(function (data) {
+                        html += `<tr>
+                                    <td>`+data.executed_on+`</td>
+                                </tr>`;
+                    });
+
+                    event.common.hideListingLoader();
+
+                    $(".event-history tbody").html(html);
+                    $(".event-history-div").removeClass('hide');
                 },
                 preparePaginationAndDisplay : function (jsonData) {
 
@@ -245,7 +288,7 @@
                     $(".loader").show();
                 },
                 removeCurrentDataFromHtmlTable : function () {
-                    $(".table tbody").html('');
+                    $(".event-listing tbody").html('');
                 },
                 setEditDataForEvent : function (data) {
 
@@ -314,12 +357,17 @@
                 event.common.formReset($('#eventForm'));
             });
 
-            $(".table tbody").on('click','a.eventEditClass',function () {
+            $(".event-listing tbody").on('click','a.eventEditClass',function () {
                 let data = $(this).data();
                 event.getEventById(data.id);
             });
 
-            $(".table tbody").on('click','a.eventDeleteClass',function () {
+            $(".event-listing tbody").on('click','a.eventHistoryClass',function () {
+                let data = $(this).data();
+                event.getEventHistoryByEventId(data.id);
+            });
+
+            $(".event-listing tbody").on('click','a.eventDeleteClass',function () {
                 if(confirm('Are you sure want to delete?') === true){
                     let data = $(this).data();
                     event.deleteEventById(data.id);

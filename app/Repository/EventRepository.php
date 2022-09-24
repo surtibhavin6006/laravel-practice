@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Jobs\Event\EventJob;
 use App\Models\Event;
+use App\Models\EventHistory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -11,14 +14,17 @@ class EventRepository
 {
     /**
      * @var Event $eventModel
+     * @var EventHistory $eventHistoryModel
      */
-    protected $eventModel;
+    protected $eventModel,$eventHistory;
 
     public function __construct(
-        Event $event
+        Event $event,
+        EventHistory $eventHistory
     )
     {
         $this->eventModel = $event;
+        $this->eventHistoryModel = $eventHistory;
     }
 
     public function getAllEvents(?Request $request)
@@ -65,42 +71,63 @@ class EventRepository
         return (new $this->eventModel)->getEventById($id)->delete();
     }
 
-    public function executeDailyEvent()
+    public function executeDailyEvent(): void
     {
-        DB::enableQueryLog();
-
+        /** @var Collection $dailyEventsData */
         $dailyEventsData = ($this->eventModel)->getDailyEvents(null);
-
-        $this->runEvent($dailyEventsData);
-        //dd($dailyEventsData);
-        //dd(DB::getQueryLog());
+        $this->dispacthEvents($dailyEventsData);
     }
 
-    public function executeWeeklyEvent()
+    public function executeWeeklyEvent(): void
     {
-        $dailyEventsData = ($this->eventModel)->getWeeklyEvents(null);
-        $this->runEvent($dailyEventsData);
+        $weeklyEventsData = ($this->eventModel)->getWeeklyEvents(null);
+        $this->dispacthEvents($weeklyEventsData);
     }
 
-    public function executeMonthlyEvent($everyMonth = 1)
+    public function executeMonthlyEvent($everyMonth = 1): void
     {
-        $dailyEventsData = ($this->eventModel)->getMonthlyEvents(null,$everyMonth);
-        $this->runEvent($dailyEventsData);
+        $monthlyEventsData = ($this->eventModel)->getMonthlyEvents(null,$everyMonth);
+        $this->dispacthEvents($monthlyEventsData);
     }
 
-    public function executeYearlyEvent()
+    public function executeYearlyEvent(): void
     {
-        $dailyEventsData = ($this->eventModel)->getYearEvents(null);
-        $this->runEvent($dailyEventsData);
+        $yearlyEventsData = ($this->eventModel)->getYearEvents(null);
+        $this->dispacthEvents($yearlyEventsData);
     }
 
-    public function runEvent($eventData)
+    private function dispacthEvents($events)
     {
-        if(!empty($eventData) && $eventData->count() >0){
-            $eventData->each(function ($event) {
-                $event->{$this->eventModel::SUCC_FULLY_RUN_COUNT} = $event->{$this->eventModel::SUCC_FULLY_RUN_COUNT}+1;
-                $event->save();
-            });
-        }
+        $events->each(function ($event) {
+            EventJob::dispatch($event);
+        });
+
+    }
+
+    /**
+     * @param $event
+     * @return void
+     */
+    public function executeEvent($event): void
+    {
+        $event->{$this->eventModel::SUCC_FULLY_RUN_COUNT} = $event->{$this->eventModel::SUCC_FULLY_RUN_COUNT}+1;
+        $event->save();
+
+        $this->createEventHistory($event->{Event::ID});
+    }
+
+    /**
+     * @param $eventId
+     * @return void
+     */
+    private function createEventHistory($eventId): void
+    {
+        $this->eventHistoryModel->{EventHistory::FK_EVENT_ID} = $eventId;
+        $this->eventHistoryModel->save();
+    }
+
+    public function getEventHisotryByEventId($eventId)
+    {
+        return $this->eventHistoryModel->getEventHistoryByEventId($eventId);
     }
 }

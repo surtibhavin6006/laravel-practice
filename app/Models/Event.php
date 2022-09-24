@@ -22,7 +22,7 @@ class Event extends Model
     public const REPEAT_ON = 'repeat_on';
     public const REPEAT_MONTH = 'repeat_month';
     public const REPEAT_WEEK = 'repeat_week';
-    public const SUCC_FULLY_RUN_COUNT = 'succfullyRunCount';
+    public const SUCC_FULLY_RUN_COUNT = 'successfullyRunCount';
 
     protected $primaryKey = self::ID;
 
@@ -42,7 +42,7 @@ class Event extends Model
         return $this->where(self::ID,$id)->firstOrFail();
     }
 
-    public function getDailyEvents(?Carbon $dateYmd)
+    public function getDailyEvents(?Carbon $date)
     {
         if (empty($dateYmd)) {
             $date = Carbon::now();
@@ -77,7 +77,7 @@ class Event extends Model
             $date = Carbon::now();
         }
         $dateYmd = $date->format('Y-m-d');
-        $currentDayOfWeek = $date->dayOfWeek;
+        $currentDayOfWeek = (string)$date->dayOfWeek;
 
         return $this
             ->where(self::REPEAT_ON,'=','W')
